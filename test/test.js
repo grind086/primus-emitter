@@ -48,22 +48,25 @@ describe('primus-emitter', function () {
     primus.on('connection', function (spark) {
       spark.send('news', 'data');
     });
-
-    client().on('news', function (data) {
-      expect(data).to.equal('data');
+    
+    client().on('event', function (msg) {
+      expect(msg.type).to.equal('news');
+      expect(msg.data).to.equal('data');
       done();
     });
   });
 
   it('should emit object from server', function (done) {
-    var msg = { hi: 'hello', num: 123456 };
+    var obj = { hi: 'hello', num: 123456 };
 
     primus.on('connection', function (spark) {
-      spark.send('news', msg);
+      spark.send('news', obj);
     });
-
-    client().on('news', function (data) {
-      expect(data).to.eql(msg);
+    
+    client().on('event', function (msg) {
+      expect(msg.type).to.equal('news');
+      expect(msg.data.hi).to.equal(obj.hi);
+      expect(msg.data.num).to.equal(obj.num);
       done();
     });
   });
@@ -78,16 +81,18 @@ describe('primus-emitter', function () {
         done();
       });
     });
-
-    client().on('news', function (data, fn) {
+    
+    client().on('event', function (msg, fn) {
+      expect(msg.type).to.equal('news');
       fn(null, 'received');
     });
   });
 
   it('should emit event from client', function (done) {
     primus.on('connection', function (spark) {
-      spark.on('news', function (data) {
-        expect(data).to.equal('data');
+      spark.on('event', function (msg) {
+        expect(msg.type).to.equal('news');
+        expect(msg.data).to.equal('data');
         done();
       });
     });
@@ -96,23 +101,26 @@ describe('primus-emitter', function () {
   });
 
   it('should emit object from client', function (done) {
-    var msg = { hi: 'hello', num: 123456 };
+    var obj = { hi: 'hello', num: 123456 };
 
     primus.on('connection', function (spark) {
-      spark.on('news', function (data) {
-        expect(data).to.eql(msg);
+      spark.on('event', function (msg) {
+        expect(msg.type).to.equal('news');
+        expect(msg.data.hi).to.equal(obj.hi);
+        expect(msg.data.num).to.equal(obj.num);
         done();
       });
     });
 
-    client().send('news', msg);
+    client().send('news', obj);
   });
 
   it('should support ack from client', function (done) {
     var msg = { hi: 'hello', num: 123456 };
 
     primus.on('connection', function (spark) {
-      spark.on('news', function (data, fn) {
+      spark.on('event', function (msg, fn) {
+        expect(msg.type).to.equal('news');
         fn(null, 'received');
       });
     });

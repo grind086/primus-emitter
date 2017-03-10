@@ -1,8 +1,13 @@
 {
-  "name": "primus-emitter",
-  "version": "3.1.1",
+  "name": "grinde-primus-emitter",
+  "version": "4.0.0",
   "description": "Simple emitter wrapper for Primus",
   "author": "Jonathan Brumley <cayasso@gmail.com>",
+  "contributors": [
+    {
+      "name": "Robert Grindeland"
+    }
+  ],
   "homepage": "https://github.com/cayasso/primus-emitter",
   "main": "index.js",
   "scripts": {
